@@ -1,0 +1,627 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sapphir AI - Envio de Exames</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+        
+
+    <style>
+        /* Importação da fonte Goodly-Semibold */
+    @font-face {
+      font-family: "Goodly-Semibold";
+      src: url("https://sapphir-ai.com.br/Goodly-Semibold.otf")
+        format("opentype");
+    }
+        body {
+            font-family: Arial, sans-serif;
+            background: url('background.png') no-repeat center center fixed;
+            background-size: cover;
+            color: #1D3A5A;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            background: linear-gradient(
+                90deg,
+                rgba(29, 58, 90, 0.7),
+                rgba(54, 193, 231, 0.7)
+            );
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        .header img {
+            width: 60px;
+            height: auto;
+            transition: transform 0.3s ease;
+        }
+        .header img:hover {
+            transform: scale(1.05);
+        }
+        .header .header-title {
+            font-family: 'Goodly-Semibold', sans-serif;
+            font-size: 1.3rem;
+            color: #fff;
+            margin: 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        .header .header-subtitle {
+            font-family: 'Goodly-Semibold', sans-serif;
+            font-size: 0.9rem;
+            color: #fff;
+            margin: 0;
+        }
+
+       .main-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    max-width: 1500px;
+    width: 95%;
+    margin: 30px auto;
+}
+        .left-section {
+            flex: 1;
+            margin-right: 20px;
+        }
+
+        .upload-section {
+            text-align: left;
+        }
+
+        .upload-section h3 {
+            color: #1D3A5A;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+        }
+
+        .upload-section input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #36C1E7;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .upload-section button {
+            background-color: #36C1E7;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        .upload-section button:hover {
+            background-color: #2AA3C4;
+        }
+
+        #toggleLaudoButton {
+            background-color: #36C1E7;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            margin-top: 10px;
+            display: none;
+        }
+
+        #toggleLaudoButton:hover {
+            background-color: #2AA3C4;
+        }
+
+        #copyLaudoButton {
+            background-color: #6c757d;
+            color: white;
+            padding: 10px 30px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            margin-top: 10px;
+            display: none;
+        }
+
+        #copyLaudoButton:hover {
+            background-color: #5a6268;
+        }
+
+        .upload-section p {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #1D3A5A;
+        }
+
+        .laudo-section {
+            margin-top: 20px;
+            text-align: left;
+            padding: 20px;
+            background: rgba(29, 58, 90, 0.05);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #laudoContainer {
+            display: none;
+            padding: 20px;
+            overflow-wrap: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        #laudoContent {
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+        }
+
+        @media (max-width: 768px) {
+            #laudoContainer {
+                max-height: 300px;
+            }
+        }
+
+        .laudo-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .right-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .right-section img {
+            width: 100px;
+            margin-bottom: 20px;
+        }
+
+        .chat-history {
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: rgba(29, 58, 90, 0.05);
+            border-radius: 10px;
+        }
+
+        .chat-history .message {
+            margin-bottom: 8px;
+        }
+
+        .chat-history .user-message {
+            text-align: right;
+        }
+
+        .chat-history .assistant-message {
+            text-align: left;
+        }
+
+        .right-section button {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #36C1E7;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .right-section button:hover {
+            background-color: #2AA3C4;
+        }
+
+        .chat-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #36C1E7;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .chat-button img {
+            width: 30px;
+        }
+
+        .chat-container {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 300px;
+            max-height: 400px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: none;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background: #1D3A5A;
+            color: #fff;
+            padding: 10px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            background: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .chat-footer {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+
+        .chat-footer input {
+            flex: 1;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            padding: 6px 12px;
+            margin-right: 6px;
+        }
+
+        .chat-footer button {
+            background: #36C1E7;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            padding: 0 15px;
+        }
+
+        .chat-body .message {
+            margin-bottom: 8px;
+        }
+
+        .chat-body .user-message {
+            text-align: right;
+        }
+
+        .chat-body .assistant-message {
+            text-align: left;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .left-section, .right-section {
+                margin: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+        
+<body>
+          <!-- Verificação de IP -->
+  <script>
+    async function checkIPAuthorization() {
+      try {
+        const response = await fetch("user-handler.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ acao: "check_ip" }),
+        });
+        const result = await response.json();
+        if (result.success && result.registered) {
+          console.log("IP autorizado. Bem-vindo!");
+        } else {
+          window.location.href = "login";
+        }
+      } catch (error) {
+        console.error("Erro ao verificar o IP:", error);
+        window.location.href = "registerform.html";
+      }
+    }
+    document.addEventListener("DOMContentLoaded", checkIPAuthorization);
+  </script>
+    <header class="header">
+         <a href="https://sapphir-ai.com.br" style="font-size: 2rem; color: #36C1E7; text-decoration: none;">
+        <i class="bi bi-arrow-left-circle-fill"></i>
+    </a>
+            <h1 class="header-title">Anexar Exames</h1>
+    </header>
+
+    <div class="main-container">
+        <div class="left-section">
+            <div class="upload-section">
+                <h3>Envie seus exames</h3>
+                <input type="file" id="examUpload" class="form-control mb-2" multiple>
+                <button id="sendExamsButton" class="btn btn-primary w-100 mb-2">Enviar Exames</button>
+                <p id="uploadStatus" class="small">Nenhum arquivo enviado ainda.</p>
+                <button id="toggleLaudoButton" class="btn btn-outline-primary w-100">Visualizar Anamnese</button>
+            </div>
+            <div class="laudo-section" id="laudoContainer">
+                <h3>Laudo do Exame</h3>
+                <pre id="laudoContent">Nenhum laudo disponível.</pre>
+                <button id="copyLaudoButton" class="btn btn-outline-secondary w-100 mt-2">Copiar Laudo</button>
+            </div>
+        </div>
+        <div class="right-section">
+            <img src="coruja.png" alt="Ícone Coruja">
+            <div id="chatHistory" class="chat-history"></div>
+            <input type="text" id="chatMessage" placeholder="Digite sua pergunta" class="form-control mb-2">
+            <button id="chatButton" class="btn btn-secondary w-100 mb-2">Consultar Chatbot</button>
+            <button id="downloadPdfButton" class="btn btn-outline-secondary w-100">Baixar Laudo em PDF</button>
+        </div>
+    </div>
+
+    <button class="chat-button" onclick="toggleExamChat()">
+        <img src="coruja.png" alt="Chat Exames" />
+    </button>
+
+    <div class="chat-container" id="examChatContainer">
+        <div class="chat-header">
+            <div style="display:flex;align-items:center;">
+                <img src="coruja.png" alt="Assistente" style="width:25px;margin-right:10px;" />
+                <span>Laudos</span>
+            </div>
+            <span class="close-chat" onclick="toggleExamChat()">❌</span>
+        </div>
+        <div class="chat-body" id="examChatBody"></div>
+        <div class="chat-footer">
+            <input type="text" id="examChatInput" placeholder="Digite sua mensagem..." onkeypress="handleExamKey(event)">
+            <button onclick="sendExamMessage()">➤</button>
+        </div>
+    </div>
+
+    <script>
+        const SERVER_URL = "https://anexarexames.onrender.com";
+        const UPLOAD_URL = `${SERVER_URL}/upload`;
+        const CHAT_EXAMES_URL = `${SERVER_URL}/chat_exames`;
+        const DOWNLOAD_LAUDO_URL = `${SERVER_URL}/download-laudo`;
+        const userId = Date.now().toString();
+
+        let laudoExtraidoGPT = "";
+        let chatStarted = false;
+        const toggleButton = document.getElementById('toggleLaudoButton');
+        const laudoContainer = document.getElementById('laudoContainer');
+        const copyButton = document.getElementById('copyLaudoButton');
+
+        function addChatMessage(text, role) {
+            const history = document.getElementById('chatHistory');
+            const div = document.createElement('div');
+            div.className = `message ${role === 'user' ? 'user-message' : 'assistant-message'}`;
+            div.textContent = text;
+            history.appendChild(div);
+            history.scrollTop = history.scrollHeight;
+        }
+
+        async function fetchWithRetry(url, options, retries = 2) {
+            for (let i = 0; i <= retries; i++) {
+                try {
+                    const resp = await fetch(url, options);
+                    const data = await resp.json().catch(() => ({}));
+                    if (!resp.ok) {
+                        throw new Error(data.error || `HTTP ${resp.status}`);
+                    }
+                    return data;
+                } catch (err) {
+                    if (i === retries) throw err;
+                    await new Promise(res => setTimeout(res, (i + 1) * 1000));
+                }
+            }
+        }
+
+        async function sendExams() {
+            const files = document.getElementById('examUpload').files;
+            const statusElement = document.getElementById('uploadStatus');
+            const laudoElement = document.getElementById('laudoContent');
+
+            if (files.length === 0) {
+                alert('Nenhum arquivo selecionado.');
+                return;
+            }
+
+            statusElement.textContent = 'Enviando arquivos...';
+
+            try {
+                const formData = new FormData();
+                formData.append('user_id', userId);
+                Array.from(files).forEach(file => formData.append('file', file));
+
+                const result = await fetchWithRetry(UPLOAD_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                laudoExtraidoGPT = result.laudo || '';
+
+                statusElement.textContent = 'Arquivos enviados com sucesso!';
+                laudoElement.textContent = laudoExtraidoGPT;
+                if (laudoExtraidoGPT) {
+                    laudoContainer.style.display = 'block';
+                    toggleButton.style.display = 'block';
+                    copyButton.style.display = 'block';
+                    toggleButton.textContent = 'Ocultar Anamnese';
+                } else {
+                    laudoContainer.style.display = 'none';
+                    toggleButton.style.display = 'none';
+                    copyButton.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Erro ao enviar arquivos:', error);
+                statusElement.textContent = `Erro: ${error.message}`;
+            }
+        }
+
+        document.getElementById('sendExamsButton').addEventListener('click', sendExams);
+        copyButton.addEventListener('click', () => {
+            const text = document.getElementById('laudoContent').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                copyButton.textContent = 'Copiado!';
+                setTimeout(() => { copyButton.textContent = 'Copiar Laudo'; }, 2000);
+            }).catch(err => {
+                console.error('Erro ao copiar laudo:', err);
+            });
+        });
+
+        toggleButton.addEventListener('click', () => {
+            const visible = laudoContainer.style.display === 'block';
+            laudoContainer.style.display = visible ? 'none' : 'block';
+            copyButton.style.display = visible ? 'none' : 'block';
+            toggleButton.innerText = visible ? 'Visualizar Anamnese' : 'Ocultar Anamnese';
+        });
+
+        async function consultarChatbot() {
+            const messageInput = document.getElementById('chatMessage');
+            const text = messageInput.value.trim();
+            if (!text) {
+                alert('Digite uma pergunta.');
+                return;
+            }
+            addChatMessage(text, 'user');
+            messageInput.value = '';
+            try {
+                const response = await fetch(`${SERVER_URL}/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text, user_id: userId })
+                });
+                const result = await response.json();
+                const reply = result.response || 'Sem resposta.';
+                addChatMessage(reply, 'assistant');
+            } catch (err) {
+                console.error('Erro no chatbot:', err);
+            }
+        }
+
+        async function baixarPDF() {
+            if (!laudoExtraidoGPT) {
+                alert('Nenhum laudo disponível para baixar.');
+                return;
+            }
+            try {
+                const response = await fetch(DOWNLOAD_LAUDO_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ laudo: laudoExtraidoGPT })
+                });
+                const result = await response.json();
+                if (response.ok && result.pdf_url) {
+                    window.open(result.pdf_url, '_blank');
+                } else {
+                    throw new Error(result.error || 'Falha ao gerar PDF');
+                }
+            } catch (err) {
+                console.error('Erro ao baixar PDF:', err);
+            }
+        }
+
+        document.getElementById('chatButton').addEventListener('click', consultarChatbot);
+        document.getElementById('downloadPdfButton').addEventListener('click', baixarPDF);
+        document.getElementById('chatMessage').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                consultarChatbot();
+            }
+        });
+
+        function addExamMessage(text, role) {
+            const chatBody = document.getElementById('examChatBody');
+            const div = document.createElement('div');
+            div.className = `message ${role === 'user' ? 'user-message' : 'assistant-message'}`;
+            if (role === 'assistant') {
+                const img = document.createElement('img');
+                img.src = 'coruja.png';
+                img.style.width = '25px';
+                img.style.marginRight = '8px';
+                div.appendChild(img);
+            }
+            const span = document.createElement('span');
+            span.textContent = text;
+            div.appendChild(span);
+            chatBody.appendChild(div);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        async function sendExamMessage(message) {
+            const input = document.getElementById('examChatInput');
+            const msg = message || input.value.trim();
+            if (!msg) return;
+            addExamMessage(msg, 'user');
+            input.value = '';
+
+            try {
+                const response = await fetch(CHAT_EXAMES_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: msg, user_id: userId })
+                });
+                const result = await response.json();
+                addExamMessage(result.response || 'Sem resposta.', 'assistant');
+            } catch (err) {
+                console.error('Erro no chat de exames:', err);
+                addExamMessage('Erro ao conectar com o servidor.', 'assistant');
+            }
+        }
+
+        function handleExamKey(event) {
+            if (event.key === 'Enter') {
+                sendExamMessage();
+            }
+        }
+
+        function toggleExamChat() {
+            const chat = document.getElementById('examChatContainer');
+            const visible = chat.style.display === 'flex';
+            if (!visible) {
+                if (!laudoExtraidoGPT || laudoExtraidoGPT.includes('insuficiente')) {
+                    alert('Envie exames válidos antes de usar o chatbot.');
+                    return;
+                }
+                chat.style.display = 'flex';
+                if (!chatStarted) {
+                    sendExamMessage(laudoExtraidoGPT);
+                    chatStarted = true;
+                }
+            } else {
+                chat.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

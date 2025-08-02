@@ -1,0 +1,14 @@
+flask
+flask-cors
+requests
+pytesseract
+pillow
+gunicorn
+flask-compress
+flask-limiter
+pdfminer.six
+python-docx
+docx2txt
+fpdf
+openai>=1.0.0
+pdf2image
