@@ -19,6 +19,15 @@ flask run
    ```
 4. Opcionalmente utilize o arquivo `render.yaml` para configurar o serviço.
 
+## Deploy no Fly.io
+1. Instale a CLI do Fly e execute `fly launch` para criar o app (use o `fly.toml` incluído).
+2. Defina as variáveis de ambiente `DEEPSEEK_API_KEY` e `OPENAI_API_KEY` com `fly secrets set`.
+3. Faça o deploy:
+   ```bash
+   fly deploy
+   ```
+
+
 ## Endpoints
 - `/upload` – envio de exames
 - `/chat` – chatbot de anamnese
